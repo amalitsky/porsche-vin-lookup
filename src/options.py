@@ -13,6 +13,7 @@ importantOptionCodes = [
     '602', # LED headlights
     '603', # bi xenon
     '625', # entry & drive
+    '640', # Sport Chrono Package i.c.w. PCM 2015
     '680', # bose (prev gen)
     '858', # gt sport steering wheel
     '9VJ', # Burmester
@@ -23,6 +24,7 @@ importantOptionCodes = [
     'P3', # racing yellow
     'P04', # Sport Seats Plus (2-way)
     'P07', # sport seat plus 18-way
+    'P9G', # Infotainment Package with BOSE® Surround Sound System 2015
     'QR5', # sport chrono
     'XEW', # Bi-Xenon Headlights in Black with Porsche Dynamic Light System
     'XLF', # sport exhaust 2016

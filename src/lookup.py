@@ -23,19 +23,20 @@ if (len(sys.argv) != 2):
     raise Exception('most likely VIN was not passed')
 
 # seemingly useless noise
-ignoredValues = [
+ignoredProps = [
     'Division',
     'Commission #',
     '\xa0',
 ]
 
-ignoredValuesSet = set(ignoredValues)
+ignoredPropsSet = set(ignoredProps)
 
 # top report section
 headerProps = [
     'VIN',
     'BASE',
     'Prod Month',
+    'Warranty Start',
     'Exterior',
     'Interior',
     'Price',
@@ -68,7 +69,7 @@ while i < tdsLength:
     key = tds[i].string.replace(':', '')
     propValue = tds[i+1].string
 
-    if (key not in ignoredValuesSet):
+    if (key not in ignoredPropsSet):
         valuesHash[key] = propValue
 
     i += 2
@@ -76,7 +77,7 @@ while i < tdsLength:
 # empty line
 print('')
 
-for key in headerPropsSet:
+for key in headerProps:
     if (key in valuesHash):
         print(
             getRowToPrint(
