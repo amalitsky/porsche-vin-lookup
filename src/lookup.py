@@ -2,14 +2,6 @@ import requests
 import sys
 from bs4 import BeautifulSoup
 
-if (len(sys.argv) != 2):
-    raise Exception('most likely VIN is not passed')
-
-vin = sys.argv[1]
-
-host = 'vinanalytics.com'
-url = '/car/' + vin + '/'
-
 def getRowToPrint(value, label = '', isBold = False):
     str = ''
 
@@ -26,6 +18,10 @@ def getRowToPrint(value, label = '', isBold = False):
 
     return str
 
+if (len(sys.argv) != 2):
+    raise Exception('most likely VIN is not passed')
+
+# seemingly useless noise
 ignoredValues = [
     'Division',
     'Commission #',
@@ -34,7 +30,7 @@ ignoredValues = [
 
 ignoredValuesSet = set(ignoredValues)
 
-goodCodes = [
+importantOptionCodes = [
     '9VL', # bose
     '9WT', # apple car play
     '030', # PASM 20mm
@@ -64,9 +60,10 @@ goodCodes = [
     'XLX', # sport exhaust
 ]
 
-goodCodesSet = sorted(set(goodCodes))
+importantOptionCodesSet = sorted(set(importantOptionCodes))
 
-headerProperties = [
+# top report section
+headerProps = [
     'VIN',
     'BASE',
     'Prod Month',
@@ -75,64 +72,54 @@ headerProperties = [
     'Price',
 ]
 
-headerPropsSet = set(headerProperties)
+headerPropsSet = set(headerProps)
 
-request = requests.get('https://' + host + url)
+vin = sys.argv[1]
+host = 'vinanalytics.com'
+path = '/car/' + vin + '/'
+
+request = requests.get('https://' + host + path)
 
 soup = BeautifulSoup(request.text, features='html.parser')
-
 table = soup.find('table')
 
 if (table == None):
-    raise Exception('most likely VIN was not found in DB')
+    raise Exception('most likely VIN was not found on ' + host)
 
 tds = table('td')
-
 tdsLength = len(tds)
 
 valuesHash = {}
 
 i = 0
-
-propName = ''
+key = ''
 propValue = ''
 
-object = {}
-
 while i < tdsLength:
-    propName = tds[i].string.replace(':', '')
+    key = tds[i].string.replace(':', '')
     propValue = tds[i+1].string
 
-    if (propName not in ignoredValuesSet):
-        object = {
-            'name': propName,
-            'value': propValue,
-        }
-
-        valuesHash[propName] = propValue
+    if (key not in ignoredValuesSet):
+        valuesHash[key] = propValue
 
     i += 2
 
-value = {}
-
-key = ''
-
+# empty line
 print('')
 
-for propName in headerProperties:
-    if (propName in valuesHash):
+for key in headerPropsSet:
+    if (key in valuesHash):
         print(
             getRowToPrint(
-                value = valuesHash[propName],
+                value = valuesHash[key],
                 isBold = True,
             )
         )
 
 print('')
 
-keys = valuesHash.keys()
-
-for key in goodCodesSet:
+# "important" options
+for key in importantOptionCodesSet:
     if (key in valuesHash):
         print(
             getRowToPrint(
@@ -144,14 +131,19 @@ for key in goodCodesSet:
 
 print('')
 
+keys = sorted(valuesHash.keys())
+
+# rest of options
 for key in keys:
     propValue = valuesHash[key]
 
-    if (key in headerProperties or key in goodCodesSet):
+    if (key in headerPropsSet or key in importantOptionCodesSet):
         continue
 
-    print(getRowToPrint(
-        label = key,
-        value = propValue,
-        isBold = key in goodCodesSet,
-    ))
+    print(
+        getRowToPrint(
+            label = key,
+            value = propValue,
+            isBold = key in importantOptionCodesSet,
+        )
+    )
