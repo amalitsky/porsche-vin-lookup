@@ -2,6 +2,9 @@ import requests
 import sys
 from bs4 import BeautifulSoup
 
+if (len(sys.argv) != 2):
+    raise Exception('most likely VIN is not passed')
+
 vin = sys.argv[1]
 
 host = 'vinanalytics.com'
@@ -78,6 +81,9 @@ request = requests.get('https://' + host + url)
 soup = BeautifulSoup(request.text, features='html.parser')
 
 table = soup.find('table')
+
+if (table == None):
+    raise Exception('most likely VIN was not found in DB')
 
 tds = table('td')
 
