@@ -50,6 +50,7 @@ goodCodes = [
     '625', # entry & drive
     '680', # bose (prev gen)
     '858', # gt sport steering wheel
+    '9VJ', # Burmester
     'A1', # black - no go
     'G1', # guards red
     'H2', # lava orange
@@ -59,8 +60,8 @@ goodCodes = [
     'P07', # sport seat plus 18-way
     'QR5', # sport chrono
     'XEW', # Bi-Xenon Headlights in Black with Porsche Dynamic Light System
-    'XLX', # sport exhaust
     'XLF', # sport exhaust 2016
+    'XLX', # sport exhaust
 ]
 
 goodCodesSet = sorted(set(goodCodes))
