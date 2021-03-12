@@ -1,7 +1,7 @@
-import requests
 import sys
 from bs4 import BeautifulSoup
 from options import importantOptionCodesSet
+import cloudscraper
 
 def getRowToPrint(value, label = '', isBold = False):
     str = ''
@@ -48,7 +48,9 @@ vin = sys.argv[1]
 host = 'vinanalytics.com'
 path = '/car/' + vin + '/'
 
-request = requests.get('https://' + host + path)
+
+scraper = cloudscraper.create_scraper()
+request = scraper.get('https://' + host + path)
 
 soup = BeautifulSoup(request.text, features='html.parser')
 table = soup.find('table')
