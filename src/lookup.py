@@ -47,16 +47,19 @@ headerPropsSet = set(headerProps)
 vin = sys.argv[1]
 host = 'vinanalytics.com'
 path = '/car/' + vin + '/'
-
+fullUrl = 'https://' + host + path
 
 scraper = cloudscraper.create_scraper()
-request = scraper.get('https://' + host + path)
+request = scraper.get(fullUrl)
 
 soup = BeautifulSoup(request.text, features='html.parser')
 table = soup.find('table')
 
 if (table == None):
-    raise Exception('most likely VIN was not found on ' + host)
+    raise Exception(
+        'Either ' + host + ' is not accessible or "' + vin + '" VIN was not found (often happens for very new cars)',
+        'Check ' + fullUrl + ' '
+    )
 
 tds = table('td')
 tdsLength = len(tds)
